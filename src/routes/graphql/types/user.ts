@@ -1,6 +1,8 @@
 import {
   GraphQLFloat,
+  GraphQLInputObjectType,
   GraphQLList,
+  GraphQLNonNull,
   GraphQLObjectType,
   GraphQLString,
 } from 'graphql';
@@ -10,12 +12,16 @@ import prisma from '../prisma.js';
 import { PostType } from './post.js';
 import { User } from '@prisma/client';
 
+const userFields = {
+  name: { type: GraphQLString },
+  balance: { type: GraphQLFloat },
+}
+
 export const UserType: GraphQLObjectType = new GraphQLObjectType({
   name: 'User',
   fields: () => ({
     id: { type: UUIDType },
-    name: { type: GraphQLString },
-    balance: { type: GraphQLFloat },
+    ...userFields,
 
     profile: {
       type: ProfileType,
@@ -63,4 +69,27 @@ export const UserType: GraphQLObjectType = new GraphQLObjectType({
   }),
 });
 
+export interface CreateUser {
+  dto: Omit<User, 'id'>
+}
 
+export interface ChangeUser extends CreateUser {
+  id: string,
+}
+
+export const CreateUserType = new GraphQLInputObjectType({
+  name: 'CreateUserInput',
+  fields: () => ({
+    name: { type: new GraphQLNonNull(GraphQLString) },
+    balance: { type: new GraphQLNonNull(GraphQLFloat) },
+  }),
+});
+
+export const ChangeUserType = new GraphQLInputObjectType({
+  name: 'ChangeUserInput',
+  fields: () => ({
+    id: { type: UUIDType },
+    name: { type: GraphQLString },
+    balance: { type: GraphQLFloat },
+  }),
+});

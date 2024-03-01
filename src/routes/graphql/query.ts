@@ -1,7 +1,7 @@
 import { GraphQLList, GraphQLNonNull, GraphQLObjectType } from 'graphql';
 import prisma from './prisma.js';
 import { MemberType as Member, Post, Profile, User } from '@prisma/client';
-import { UUIDType } from './types/uuid.js';
+import { requiredId } from './types/uuid.js';
 import { UserType } from './types/user.js';
 import { MemberType, MemberTypeId } from './types/member.js';
 import { ProfileType } from './types/profile.js';
@@ -18,7 +18,7 @@ export const RootQuery = new GraphQLObjectType({
     user: {
       type: UserType,
       args: {
-        id: { type: new GraphQLNonNull(UUIDType)},
+        id: requiredId,
       },
       resolve: async (_, { id }: User) =>
         await prisma.user.findUnique({
@@ -34,7 +34,7 @@ export const RootQuery = new GraphQLObjectType({
     post: {
       type: PostType,
       args: {
-        id: { type: new GraphQLNonNull(UUIDType)},
+        id: requiredId,
       },
       resolve: async (_, { id }: Post) =>
         await prisma.post.findUnique({
@@ -66,7 +66,7 @@ export const RootQuery = new GraphQLObjectType({
     profile: {
       type: ProfileType,
       args: {
-        id: { type: new GraphQLNonNull(UUIDType)},
+        id: requiredId,
       },
       resolve: async (_, { id }: Profile) =>
         await prisma.profile.findUnique({
