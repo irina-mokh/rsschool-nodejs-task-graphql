@@ -6,11 +6,11 @@ import {
   GraphQLObjectType,
   GraphQLString,
 } from 'graphql';
+import prisma from '../prisma.js';
+import { User } from '@prisma/client';
 import { UUIDType } from './uuid.js';
 import { ProfileType } from './profile.js';
-import prisma from '../prisma.js';
 import { PostType } from './post.js';
-import { User } from '@prisma/client';
 
 const userFields = {
   name: { type: GraphQLString },
@@ -76,6 +76,8 @@ export interface CreateUser {
 export interface ChangeUser extends CreateUser {
   id: string,
 }
+
+export type FollowerType = {userId: string; authorId: string};
 
 export const CreateUserType = new GraphQLInputObjectType({
   name: 'CreateUserInput',

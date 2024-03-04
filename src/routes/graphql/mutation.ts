@@ -1,10 +1,10 @@
 import {  GraphQLBoolean, GraphQLInputObjectType, GraphQLNonNull, GraphQLObjectType } from 'graphql';
-import { PostType, CreatePostType, CreatePost, ChangePost, ChangePostType } from './types/post.js';
 import prisma from './prisma.js';
-import { ChangeProfile, ChangeProfileType, CreateProfile, CreateProfileType, ProfileType } from './types/profile.js';
-import { ChangeUser, ChangeUserType, CreateUser, CreateUserType, UserType } from './types/user.js';
-import { requiredId } from './types/uuid.js';
 import { Post, Profile, User } from '@prisma/client';
+import { requiredId } from './types/uuid.js';
+import { PostType, CreatePostType, CreatePost, ChangePost, ChangePostType } from './types/post.js';
+import { ChangeProfile, ChangeProfileType, CreateProfile, CreateProfileType, ProfileType } from './types/profile.js';
+import { ChangeUser, ChangeUserType, CreateUser, CreateUserType, FollowerType, UserType } from './types/user.js';
 
 const requiredDto = (InputType: GraphQLInputObjectType) =>({ type: new GraphQLNonNull(InputType) });
 
@@ -16,7 +16,7 @@ export const RootMutation = new GraphQLObjectType({
       args: {
         dto: requiredDto(CreatePostType),
       },
-      resolve: async(_, {dto}: CreatePost) => 
+      resolve: async(_, { dto }: CreatePost) => 
         await prisma.post.create({data: dto})
     },
     createProfile: {
@@ -109,7 +109,7 @@ export const RootMutation = new GraphQLObjectType({
         userId: requiredId,
         authorId: requiredId,
       },
-      resolve: async (_, { userId, authorId }: { userId: string; authorId: string }) => {
+      resolve: async (_, { userId, authorId }: FollowerType) => {
         return await prisma.user.update({
           where: {
             id: userId,
@@ -131,7 +131,7 @@ export const RootMutation = new GraphQLObjectType({
         userId: requiredId,
         authorId: requiredId,
       },
-      resolve: async (_, { userId, authorId }: { userId: string; authorId: string }) => {
+      resolve: async (_, { userId, authorId }: FollowerType) => {
         await prisma.subscribersOnAuthors.delete({
           where: {
             subscriberId_authorId: {

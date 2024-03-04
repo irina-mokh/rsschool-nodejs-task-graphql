@@ -5,10 +5,10 @@ import {
   GraphQLNonNull,
   GraphQLObjectType,
 } from 'graphql';
-import { UUIDType } from './uuid.js';
-import { MemberType, MemberTypeId } from './member.js';
 import prisma from '../prisma.js';
 import { Profile } from '@prisma/client';
+import { UUIDType } from './uuid.js';
+import { MemberType, MemberTypeId } from './member.js';
 
 const profileFields = {
   isMale: { type: GraphQLBoolean },
